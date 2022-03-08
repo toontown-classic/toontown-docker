@@ -1,0 +1,148 @@
+version: "3"
+services:
+  # Web Infrastructure
+  download-server:
+    image: thetestgame/toontown-classic-dl:latest
+    networks:
+      - default
+      - toontown
+    ports:
+      - "8080:80/tcp" 
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  
+  # Network Infrastructure
+  classic-otp:
+    image: thetestgame/toontown-classic-otp:latest
+    networks:
+      - default
+      - toontown
+    ports:
+      - "6667:6667/tcp"
+      - "7100:7100/tcp"
+    volumes:
+        - ttc-otp-config:/server/config
+        - ttc-otp-database:/server/databases
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  # Toontown Districts
+  district-boingy-acres:
+    image: thetestgame/toontown-classic-ai:latest
+    networks:
+      - default
+      - toontown
+    environment:
+      - OTP_IP=otp:7100
+      - DISTRICT_NAME=Boingy Acres
+      - AIR_BASE_CHANNEL=200000000
+    links:
+      - "classic-otp:otp"
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  district-boingy-bay:
+    image: thetestgame/toontown-classic-ai:latest
+    networks:
+      - default
+      - toontown
+    environment:
+      - OTP_IP=otp:7100
+      - DISTRICT_NAME=Boingy Bay
+      - AIR_BASE_CHANNEL=201000000
+    links:
+      - "classic-otp:otp"
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  district-boingy-summit:
+    image: thetestgame/toontown-classic-ai:latest
+    networks:
+      - default
+      - toontown
+    environment:
+      - OTP_IP=otp:7100
+      - DISTRICT_NAME=Boingy Summit
+      - AIR_BASE_CHANNEL=202000000
+    links:
+      - "classic-otp:otp"
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  district-boingyboro:
+    image: thetestgame/toontown-classic-ai:latest
+    networks:
+      - default
+      - toontown
+    environment:
+      - OTP_IP=otp:7100
+      - DISTRICT_NAME=Boingyboro
+      - AIR_BASE_CHANNEL=203000000
+    links:
+      - "classic-otp:otp"
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  district-bouncy-summit:
+    image: thetestgame/toontown-classic-ai:latest
+    networks:
+      - default
+      - toontown
+    environment:
+      - OTP_IP=otp:7100
+      - DISTRICT_NAME=Bouncy Summit
+      - AIR_BASE_CHANNEL=204000000
+    links:
+      - "classic-otp:otp"
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  district-cravy-grove:
+    image: thetestgame/toontown-classic-ai:latest
+    networks:
+      - default
+      - toontown
+    environment:
+      - OTP_IP=otp:7100
+      - DISTRICT_NAME=Cravy Grove
+      - AIR_BASE_CHANNEL=205000000
+    links:
+      - "classic-otp:otp"
+    restart: unless-stopped
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+# Internal VLAN
+networks:
+  default:
+  toontown:
+
+# Storage Volumes
+volumes:
+  ttc-otp-config:
+    driver: local
+  ttc-otp-database:
+    driver: local
